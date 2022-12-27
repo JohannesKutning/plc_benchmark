@@ -1,0 +1,494 @@
+﻿FUNCTION_BLOCK "p"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT
+      x : Real;
+   END_VAR
+
+   VAR_OUTPUT
+      y : Real;
+   END_VAR
+
+   VAR
+      Kp : Real;
+   END_VAR
+
+
+BEGIN
+	#y := #Kp * #x;
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK "i"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT
+      x : Real;
+   END_VAR
+
+   VAR_OUTPUT
+      y : Real;
+   END_VAR
+
+   VAR
+      Kp : Real;
+      Tn : Real;
+      "dT" : Real;
+      sum : Real;
+   END_VAR
+
+
+BEGIN
+	#sum := #sum + #x;
+	#y   := #sum * #Kp * (#dT / #Tn);
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK "pt1"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT
+      x : Real;
+   END_VAR
+
+   VAR_OUTPUT
+      y : Real;
+   END_VAR
+
+   VAR
+      Kp : Real;
+      T1 : Real;
+      "dT" : Real;
+      yn_1 : Real;
+   END_VAR
+
+
+BEGIN
+	#y    := ( #Kp * #x - #yn_1 ) / ( ( #T1 / #dT ) + 1 ) + #yn_1;
+	#yn_1 := #y;
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK "pi"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT
+      x : Real;
+   END_VAR
+
+   VAR_OUTPUT
+      y : Real;
+   END_VAR
+
+   VAR
+      Kp : Real;
+      Tn : Real;
+      "dT" : Real;
+      sum : Real;
+   END_VAR
+
+   VAR_TEMP
+      yi : Real;
+      yp : Real;
+   END_VAR
+
+
+BEGIN
+	#yp  := #Kp * #x;
+
+	#sum := #sum + #x;
+	#yi  := ( #sum * #Kp * (#dT / #Tn) );
+
+	#y   := #yp + #yi;
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK "pid"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT
+      x : Real;
+   END_VAR
+
+   VAR_OUTPUT
+      y : Real;
+   END_VAR
+
+   VAR
+      Kp : Real;
+      Tn : Real;
+      Tv : Real;
+      "dT" : Real;
+      sum : Real;
+      xn_1 : Real;
+   END_VAR
+
+   VAR_TEMP
+      yi : Real;
+      yp : Real;
+      yd : Real;
+   END_VAR
+
+
+BEGIN
+	#yp   := #Kp * #x;
+
+	#sum  := #sum + #x;
+	#yi   := ( #sum * #Kp * (#dT / #Tn) );
+
+	#yd   := (#x - #xn_1) * #Kp * (#Tv / #dT);
+	#xn_1 := #x;
+
+	#y    := #yp + #yi + #yd;
+END_FUNCTION_BLOCK
+
+DATA_BLOCK "pidv"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+"pid"
+
+BEGIN
+
+END_DATA_BLOCK
+
+DATA_BLOCK "pia"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+"pi"
+
+BEGIN
+
+END_DATA_BLOCK
+
+DATA_BLOCK "w"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+   VAR RETAIN
+      s : Array[0..8191] of Real;
+   END_VAR
+
+
+BEGIN
+
+END_DATA_BLOCK
+
+DATA_BLOCK "pt1a"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+"pt1"
+
+BEGIN
+
+END_DATA_BLOCK
+
+DATA_BLOCK "pt1v"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+"pt1"
+
+BEGIN
+
+END_DATA_BLOCK
+
+DATA_BLOCK "ps"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+"p"
+
+BEGIN
+
+END_DATA_BLOCK
+
+DATA_BLOCK "y"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+   VAR
+      s : Array[0..8191] of Real;
+   END_VAR
+
+
+BEGIN
+
+END_DATA_BLOCK
+
+DATA_BLOCK "is"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+"i"
+
+BEGIN
+
+END_DATA_BLOCK
+
+FUNCTION "control_loop" : Void
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_TEMP
+      i : Int;
+      es : Real;
+      s : Real;
+      yp : Real;
+      ev : Real;
+      v : Real;
+      ypid : Real;
+      ea : Real;
+      a : Real;
+      ypi : Real;
+   END_VAR
+
+
+BEGIN
+
+	#s := 0.0;
+	#v := 0.0;
+	#a := 0.0;
+
+	FOR #i := 0 TO 8191 DO;
+
+	    #es := "w".s[#i] - #s;
+
+	    "ps"( x := #es, y => #yp );
+
+	    #ev := #yp - #v;
+
+	    "pidv"( x := #ev, y => #ypid );
+
+	    #ea := #ypid - #a;
+
+	    "pia"( x := #ea, y => #ypi );
+
+	    "pt1a"( x := #ypi, y => #a );
+
+	    "pt1v"( x := #a, y => #v );
+
+	    "is"( x := #v, y => #s );
+
+	    "y".s[#i] := #s;
+	END_FOR;
+END_FUNCTION
+
+FUNCTION "init_loop" : Void
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_TEMP
+      "dT" : Real;
+      x : Int;
+      i : Int;
+   END_VAR
+
+   VAR CONSTANT
+      pi : Real := 3.14159;
+   END_VAR
+
+
+BEGIN
+	#dT         := 20.0e-6;
+
+	// P   ps  ( 1 );
+	"ps".Kp     := 1.0;
+
+	// PID pid ( 1.0,   dT, 124.3, 197.3e-6 );
+	"pidv".Kp   := 2.07;
+	"pidv".dT   := #dT;
+	"pidv".Tn   := 1.293e-3;
+	"pidv".Tv   := 48.13e-6;
+	"pidv".sum  := 0.0;
+	"pidv".xn_1 := 0.0;
+
+	// PI  pi  ( 1.0,   dT, 197.3e-6 );
+	"pia".Kp    := 4.43;
+	"pia".dT    := #dT;
+	"pia".Tn    := 197.3e-6;
+	"pia".sum   := 0.0;
+
+	// PT1 pt1a( 0.89,  dT, 197.3e-6 );
+	"pt1a".Kp   := 0.89;
+	"pt1a".dT   := #dT;
+	"pt1a".T1   := 197.3e-6;
+	"pt1a".yn_1 := 0.0;
+
+	// PT1 pt1v( 0.39,  dT, 124.3 );
+	"pt1v".Kp   := 0.39;
+	"pt1v".dT   := #dT;
+	"pt1v".T1   := 124.3e-5;
+	"pt1v".yn_1 := 0.0;
+
+	// I   is  ( 1, dT, 124.3 );
+	"is".Kp     := 1.0;
+	"is".#dT    := #dT;
+	"is".Tn     := 16.0e-6;
+	"is".sum    := 0.0;
+
+
+	#i := 0;
+	FOR #x := 0 TO 255 DO
+	    "w".s[#i + #x] := (7.63e-5 * INT_TO_REAL(#x) * INT_TO_REAL(#x));
+	END_FOR;
+
+	#i := #i + 256;
+	FOR #x := 0 TO 255 DO
+	    "w".s[#i + #x] := (-7.63e-5 * INT_TO_REAL(#x - 256) * INT_TO_REAL(#x - 256) + 10.0);
+	END_FOR;
+
+	#i := #i + 256;
+	FOR #x := 0 TO 255 DO
+	    "w".s[#i + #x] := (10.0);
+	END_FOR;
+
+	#i := #i + 256;
+	FOR #x := 0 TO 511 DO
+	    "w".s[#i + #x] := (-3.81e-5 * INT_TO_REAL(#x) * INT_TO_REAL(#x) + 10.0);
+	END_FOR;
+
+	#i := #i + 512;
+	FOR #x := 0 TO 511 DO
+	    "w".s[#i + #x] := (3.81e-5 * INT_TO_REAL(#x - 512) * INT_TO_REAL(#x - 512) - 10.0);
+	END_FOR;
+
+	#i := #i + 512;
+	FOR #x := 0 TO 255 DO
+	    "w".s[#i + #x] := (-10.0);
+	END_FOR;
+
+	#i := #i + 256;
+	FOR #x := 0 TO 511 DO
+	    "w".s[#i + #x] := (3.81e-5 * INT_TO_REAL(#x) * INT_TO_REAL(#x) - 10.0);
+	END_FOR;
+
+	#i := #i + 512;
+	FOR #x := 0 TO 511 DO
+	    "w".s[#i + #x] := (-3.81e-5 * INT_TO_REAL(#x - 512) * INT_TO_REAL(#x - 512) + 10.0);
+	END_FOR;
+
+	#i := #i + 512;
+	FOR #x := 0 TO 511 DO
+	    "w".s[#i + #x] := (5.0 * COS(2 * #pi / 512 * #x) + 5.0);
+	END_FOR;
+
+	#i := #i + 512;
+	FOR #x := 0 TO 511 DO
+	    "w".s[#i + #x] := (5.0 * COS(2 * #pi / 1024 * #x) + 5.0);
+	END_FOR;
+
+	#i := #i + 512;
+	FOR #x := 0 TO 511 DO
+	    "w".s[#i + #x] := (5.0 * COS(2 * #pi / 1024 * #x) - 5.0);
+	END_FOR;
+
+	#i := #i + 512;
+	FOR #x := 0 TO 511 DO
+	    "w".s[#i + #x] := (-5.0 * COS(2 * #pi / 512 * #x) - 5.0);
+	END_FOR;
+
+	#i := #i + 512;
+	FOR #x := 0 TO 511 DO
+	    "w".s[#i + #x] := (3.81e-5 * INT_TO_REAL(#x) * INT_TO_REAL(#x) - 10.0);
+	END_FOR;
+
+	#i := #i + 512;
+	FOR #x := 0 TO 511 DO
+	    "w".s[#i + #x] := (-3.81e-5 * INT_TO_REAL(#x - 512) * INT_TO_REAL(#x - 512) + 10.0);
+	END_FOR;
+
+	#i := #i + 512;
+	FOR #x := 0 TO 255 DO
+	    "w".s[#i + #x] := (10.0);
+	END_FOR;
+
+	#i := #i + 256;
+	FOR #x := 0 TO 511 DO
+	    "w".s[#i + #x] := (-3.81e-5 * INT_TO_REAL(#x) * INT_TO_REAL(#x) + 10.0);
+	END_FOR;
+
+	#i := #i + 512;
+	FOR #x := 0 TO 511 DO
+	    "w".s[#i + #x] := (3.81e-5 * INT_TO_REAL(#x - 512) * INT_TO_REAL(#x - 512) - 10.0);
+	END_FOR;
+
+	#i := #i + 512;
+	FOR #x := 0 TO 255 DO
+	    "w".s[#i + #x] := (-10.0);
+	END_FOR;
+
+	#i := #i + 256;
+	FOR #x := 0 TO 255 DO
+	    "w".s[#i + #x] := (7.63e-5 * INT_TO_REAL(#x) * INT_TO_REAL(#x) - 10.0);
+	END_FOR;
+
+	#i := #i + 256;
+	FOR #x := 0 TO 255 DO
+	    "w".s[#i + #x] := (-7.63e-5 * INT_TO_REAL(#x - 256) * INT_TO_REAL(#x - 256));
+	END_FOR;
+END_FUNCTION
+
+ORGANIZATION_BLOCK "Main"
+TITLE = "Main Program Sweep (Cycle)"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+
+BEGIN
+	"init_loop"();
+	"control_loop"();
+END_ORGANIZATION_BLOCK
+
+FUNCTION_BLOCK "pd"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT
+      x : Real;
+   END_VAR
+
+   VAR_OUTPUT
+      y : Real;
+   END_VAR
+
+   VAR
+      Kp : Real;
+      Tv : Real;
+      "dT" : Real;
+      xn_1 : Real;
+   END_VAR
+
+   VAR_TEMP
+      yp : Real;
+      yd : Real;
+   END_VAR
+
+
+BEGIN
+	#yp   := #Kp * #x;
+
+	#yd   := (#x - #xn_1) * #Kp * (#Tv / #dT);
+	#xn_1 := #x;
+
+	#y    := #yp + #yd;
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK "d"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT
+      x : Real;
+   END_VAR
+
+   VAR_OUTPUT
+      y : Real;
+   END_VAR
+
+   VAR
+      Kp : Real;
+      Tv : Real;
+      "dT" : Real;
+      xn_1 : Real;
+   END_VAR
+
+
+BEGIN
+	#y    := (#x - #xn_1) * #Kp * (#Tv / #dT);
+	#xn_1 := #x;
+END_FUNCTION_BLOCK
+
