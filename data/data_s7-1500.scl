@@ -1,0 +1,245 @@
+﻿FUNCTION "lfsr14" : Int
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT
+      seed : Int;
+   END_VAR
+
+   VAR_TEMP
+      s : Int;
+      p : Int;
+   END_VAR
+BEGIN
+	#s := #seed * 2;
+	#p := BOOL_TO_INT(#s.%X14 XOR #s.%X13 XOR #s.%X12 XOR #s.%X2);
+	#s := #s + #p;
+	#lfsr14 := #s AND 16#3fff;
+END_FUNCTION
+
+FUNCTION_BLOCK "data"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT
+      size : Int;
+   END_VAR
+
+   VAR
+      init : Array[0..4095] of Real;
+      shuffled : Array[0..4095] of Real;
+      sorted : Array[0..4095] of Real;
+      stackRight : Array[0..2048] of Int;
+      stackLeft : Array[0..2048] of Int;
+   END_VAR
+
+   VAR_TEMP
+      seed : Int;
+      i : Int;
+      pos : Int;
+      copy : Real;
+      max : Real;
+      min : Real;
+      sum : Real;
+      avg : Real;
+      "var" : Real;
+      sdv : Real;
+      right : Int;
+      left : Int;
+      middle : Int;
+      pivot : Real;
+      r : Int;
+      l : Int;
+      stackSize : DInt;
+      mismatch : Bool;
+      compare : Bool;
+   END_VAR
+
+
+BEGIN
+	//----------------------------------------------------------------------
+	// initalize
+	#seed := 42;
+
+	FOR #i := 0 TO #size - 1 DO
+	    #init[#i] := INT_TO_REAL(#i) / 3.14159;
+	END_FOR;
+
+	//----------------------------------------------------------------------
+	// initalize shuffled
+	FOR #i := 0 TO #size - 1 DO
+	    #shuffled[#i] := #init[#i];
+	END_FOR;
+
+	//----------------------------------------------------------------------
+	// shuffle the data
+	FOR #i := 0 TO #size - 1 DO
+	    #seed := "lfsr14"(seed := #seed);
+	    #pos := #seed MOD #size;
+
+	    #copy := #init[#size - 1];
+	    #init[#size - 1] := #init[#pos];
+	    #init[#pos] := #copy;
+	END_FOR;
+
+	//----------------------------------------------------------------------
+	// max
+	#max := #shuffled[0];
+
+	FOR #i := 1 TO #size - 1 DO
+	    IF #shuffled[#i] > #max THEN
+	        #max := #shuffled[#i];
+	    END_IF;
+	END_FOR;
+
+	//----------------------------------------------------------------------
+	// min
+	#min := #shuffled[0];
+
+	FOR #i := 1 TO #size - 1 DO
+	    IF #shuffled[#i] < #min THEN
+	        #min := #shuffled[#i];
+	    END_IF;
+	END_FOR;
+
+	//----------------------------------------------------------------------
+	// avg
+	#sum := #shuffled[0];
+
+	FOR #i := 1 TO #size - 1 DO
+	    #sum := #sum + #shuffled[#i];
+	END_FOR;
+
+	#avg := #sum / #size;
+
+	//----------------------------------------------------------------------
+	// sdv
+	#sum := #shuffled[0];
+
+	FOR #i := 1 TO #size - 1 DO
+	    #sum := #sum + #shuffled[#i];
+	END_FOR;
+
+	#avg := #sum / #size;
+
+	(* in a second run we calculate the variance of the array *)
+
+	#var := (#shuffled[0] - #avg) ** 2;
+	FOR #i := 1 TO #size - 1 DO
+	    #var := #var + (#shuffled[0] - #avg) ** 2;
+	END_FOR;
+
+	#var := #var / #size;
+
+	#sdv := SQRT(#var);
+
+	//----------------------------------------------------------------------
+	// sum
+	#sum := 0;
+
+	FOR #i := 0 TO #size - 1 DO
+	    #sum := #sum + #shuffled[#i];
+	END_FOR;
+
+	//----------------------------------------------------------------------
+	// copy shuffled to sorted
+	FOR #i := 0 TO #size - 1 DO
+	    #sorted[#i] := #shuffled[#i];
+	END_FOR;
+
+	//----------------------------------------------------------------------
+	// quicksort
+	#stackSize := 0;
+
+	// "stackPush"(left := 0, right := #size -1);
+	#stackLeft  [ #stackSize ] := #left;
+	#stackRight [ #stackSize ] := #right;
+	#stackSize := #stackSize + 1;
+
+	WHILE #stackSize <> 0 DO
+	    // "stackPop"(left => #left, right => #right);
+	    #stackSize := #stackSize - 1;
+	    #left  := #stackLeft [#stackSize];
+	    #right := #stackRight[#stackSize];
+
+	    WHILE (NOT (#left >= #right)) DO
+	        #middle := #left + ((#right - #left) / 2);
+	        #pivot := #sorted[#middle];
+
+	        #l := #left;
+	        #r := #right;
+
+	        WHILE (NOT (#l >= #r)) DO
+	            WHILE (#sorted[#l] < #pivot) DO
+	                #l := #l + 1;
+	            END_WHILE;
+
+	            WHILE (#sorted[#r] > #pivot) DO
+	                #r := #r - 1;
+	            END_WHILE;
+
+	            IF (#l <= #r) THEN
+	                IF (#l <> #r) THEN
+	                    // "swap"(left := #l, right := #r);
+	                    #copy := #sorted[#l];
+	                    #sorted[#l] := #sorted[#r];
+	                    #sorted[#r] := #copy;
+	                END_IF;
+	                #l := #l + 1;
+	                #r := #r - 1;
+	            END_IF;
+	        END_WHILE;
+
+	        IF ((#r - #left) > (#right - #l)) THEN
+	            IF (#left < #r) THEN
+	                // "stackPush"(left := #left, right := #r);
+	                #stackLeft[#stackSize] := #left;
+	                #stackRight[#stackSize] := #r;
+	                #stackSize := #stackSize + 1;
+	            END_IF;
+	            #left := #l;
+	        ELSE
+	            IF (#l < #right) THEN
+
+	                // "stackPush"(left := #l, right := #right);
+	                #stackLeft[#stackSize] := #l;
+	                #stackRight[#stackSize] := #right;
+	                #stackSize := #stackSize + 1;
+	            END_IF;
+
+	            #right := #r;
+	        END_IF;
+	    END_WHILE;
+	END_WHILE;
+
+	// compare
+	#mismatch := false;
+
+	FOR #i := 0 TO #size - 1 DO
+	    IF (#init[#i] <> #sorted[#i]) THEN
+	        #mismatch := true;
+	    END_IF;
+	END_FOR;
+
+	#compare := NOT #mismatch;
+END_FUNCTION_BLOCK
+
+DATA_BLOCK "dataObject"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+"data"
+BEGIN
+END_DATA_BLOCK
+
+ORGANIZATION_BLOCK "Main"
+TITLE = "Main Program Sweep (Cycle)"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_TEMP
+      i : DInt;
+   END_VAR
+BEGIN
+	FOR #i := 0 TO 99 DO
+	    "dataObject"(4096);
+	END_FOR;
+END_ORGANIZATION_BLOCK
+
