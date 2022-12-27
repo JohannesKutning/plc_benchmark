@@ -115,5 +115,5 @@ The noise source is a 14 bit wide LSFR with an output value transformation into
 the interval $[-1,1]$.
 This leads to the following input singal form:
 
-![FFT Input Signal](/doc/fft_input_signal.pdf?raw=true)
+![FFT Input Signal](/doc/fft_input_signal.png?raw=true)
 
