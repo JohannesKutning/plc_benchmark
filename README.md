@@ -92,6 +92,21 @@ additional data blocks for intermediate results.
 
 # PDI Controller (pid)
 
+As an additional benchmark program for floating point arithmetic the time
+discret PID control offers a real application background.
+The program implements the control loop shown in the following figure including
+a PT2 element and the PID controller element.
+
+![PID Loop](/doc/pid_loop.png?raw=true)
+
+At first the program computes the input signal to the system with 8192 values
+and the following signal form.
+Afterwards the control loop including the PT2 element and the PID controller
+element are computed for each input value.
+The figure shows both the input **w** and the control loop ouput signal **y**.
+
+![PID Signals](/doc/pid_signals.png?raw=true)
+
 # Motion Controller (motion)
 
 # Fast Fourier Transform (fft)
