@@ -55,6 +55,8 @@ state transition network uses a switch-case style with integer comparison
 operations.
 The generation uses the following arguments:
 
+| Parameter        | Value |
+|------------------|-------|
 | state-count      | 128   |
 | iterations       | 16384 |
 | transition-count | 3     |
