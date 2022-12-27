@@ -1,0 +1,254 @@
+﻿FUNCTION_BLOCK "pid"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT
+      x : Real;
+   END_VAR
+
+   VAR_OUTPUT
+      y : Real;
+   END_VAR
+
+   VAR
+      Kp : Real;
+      Tn : Real;
+      Tv : Real;
+      "dT" : Real;
+      sum : Real;
+      xn_1 : Real;
+   END_VAR
+
+   VAR_TEMP
+      yi : Real;
+      yp : Real;
+      yd : Real;
+   END_VAR
+
+BEGIN
+	#yp := #Kp * #x;
+
+	#sum := #sum + #x;
+	#yi := (#sum * #Kp * (#dT / #Tn));
+
+	#yd := (#x - #xn_1) * #Kp * (#Tv / #dT);
+	#xn_1 := #x;
+
+	#y := #yp + #yi + #yd;
+
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK "pt1"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT
+      x : Real;
+   END_VAR
+
+   VAR_OUTPUT
+      y : Real;
+   END_VAR
+
+   VAR
+      Kp : Real;
+      T1 : Real;
+      "dT" : Real;
+      yn_1 : Real;
+   END_VAR
+
+BEGIN
+	#y := (#Kp * #x - #yn_1) / ((#T1 / #dT) + 1) + #yn_1;
+	#yn_1 := #y;
+
+END_FUNCTION_BLOCK
+
+DATA_BLOCK "pid1"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+"pid"
+
+BEGIN
+
+END_DATA_BLOCK
+
+DATA_BLOCK "t1"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+"pt1"
+
+BEGIN
+
+END_DATA_BLOCK
+
+DATA_BLOCK "t2"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+"pt1"
+
+BEGIN
+
+END_DATA_BLOCK
+
+FUNCTION_BLOCK "controlLoop"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+   VAR
+      input : Array[0..8190] of Real;
+      output : Array[0..8190] of Real;
+   END_VAR
+
+   VAR_TEMP
+      size : DInt;
+      cycles : DInt;
+      steps : DInt;
+      up : DInt;
+      level : DInt;
+      down : DInt;
+      min : Real;
+      max : Real;
+      value : Real;
+      index : DInt;
+      i : DInt;
+      j : DInt;
+      e : Real;
+      u : Real;
+      y : Real;
+      y1 : Real;
+   END_VAR
+
+BEGIN
+	// initialize the input signal
+	#size   := 8191;
+	#cycles := 16;
+	#steps  := #size / #cycles; // 512
+
+	#up     := #steps / 8; // 64
+	#level  := #steps / 8; // 64
+	#down   := #steps / 4; // 128
+
+	#min    := -10.0;
+	#max    :=  10.0;
+	#value  :=   0.0;
+
+	#index  :=     0;
+
+	FOR #i := 0 TO ( #cycles ) - 1 DO
+
+	    // ramp up from 0 TO 10.0 in 64 ticks
+	    FOR #j := 0 TO #up - 1 DO
+
+	        #input[ #index ] := #value;
+
+	        #value := #value + #max / DINT_TO_REAL( #up );
+
+	        #index := #index + 1;
+
+	    END_FOR;
+
+	    // level at 10.0 for 64 ticks
+	    FOR #j := 0 TO #level - 1 DO
+
+	        #input[#index] := #max;
+
+	        #index := #index + 1;
+
+	    END_FOR;
+
+	    // ramp down from 10.0 TO 0.0 in 64 ticks
+	    FOR #j := 0 TO #down - 1 DO
+
+	        #input[#index] := #value;
+
+	        #value := #value - #max / DINT_TO_REAL(#down);
+
+	        #index := #index + 1;
+
+	    END_FOR;
+
+	    // ramp down from 0 TO -10.0 in 64 ticks
+	    FOR #j := 0 TO #down - 1 DO
+
+	        #input[#index] := #value;
+
+	        #value := #value - #max / DINT_TO_REAL(#down);
+
+	        #index := #index + 1;
+
+	    END_FOR;
+
+	    // ramp up from -10.0 TO 0.0 in 64 ticks
+	    FOR #j := 0 TO #up - 1 DO
+
+	        #input[#index] := #value;
+
+	        #value := #value + #max / DINT_TO_REAL(#up);
+
+	        #index := #index + 1;
+
+	    END_FOR;
+	END_FOR;
+
+	// initialize the blocks
+	"pid1".Kp   := 2.0;
+	"pid1".dT   := 0.001;
+	"pid1".Tn   := 0.01;
+	"pid1".Tv   := 0.0005;
+	"pid1".xn_1 := 0.0;
+	"pid1".sum  := 0.0;
+
+	"t1".Kp   := 0.6;
+	"t1".dT   := 0.001;
+	"t1".T1   := 0.01;
+	"t1".yn_1 := 0.0;
+
+	"t2".Kp := 0.6;
+	"t2".dT := 0.001;
+	"t2".T1 := 0.01;
+	"t2".yn_1 := 0.0;
+
+	#y := 0.0;
+
+	// execute the control loop
+	FOR #i := 0 TO #size - 1 DO
+
+	    #e := #input[ #i ] - #y;
+
+	    "pid1"(x := #e, y => #u);
+
+	    "t1"(x := #u, y => #y1);
+
+	    "t2"(x := #y1, y => #y);
+
+	    #output[#i] := #y;
+
+	END_FOR;
+END_FUNCTION_BLOCK
+
+DATA_BLOCK "controlLoop1"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+"controlLoop"
+
+BEGIN
+
+END_DATA_BLOCK
+
+ORGANIZATION_BLOCK "main"
+TITLE = "Main Program Sweep (Cycle)"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+   VAR_TEMP
+      OB1_EV_CLASS : Byte;   // Bits 0-3 = 1 (Coming event), Bits 4-7 = 1 (Event class 1)
+      OB1_SCAN_1 : Byte;   // 1 (Cold restart scan 1 of OB 1), 3 (Scan 2-n of OB 1)
+      OB1_PRIORITY : Byte;   // Priority of OB Execution
+      OB1_OB_NUMBR : Byte;   // 1 (Organization block 1, OB1)
+      OB1_RESERVED_1 : Byte;   // Reserved for system
+      OB1_RESERVED_2 : Byte;   // Reserved for system
+      OB1_PREV_CYCLE : Int;   // Cycle time of previous OB1 scan (milliseconds)
+      OB1_MIN_CYCLE : Int;   // Minimum cycle time of OB1 (milliseconds)
+      OB1_MAX_CYCLE : Int;   // Maximum cycle time of OB1 (milliseconds)
+      OB1_DATE_TIME : Date_And_Time;   // Date and time OB1 started
+   END_VAR
+
+BEGIN
+	"controlLoop1"();
+END_ORGANIZATION_BLOCK
