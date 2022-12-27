@@ -1,7 +1,7 @@
 ﻿FUNCTION "clog2" : Int
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
-   VAR_INPUT 
+   VAR_INPUT
       x : Int;
    END_VAR
 
@@ -14,7 +14,7 @@ DATA_BLOCK "inputData"
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
 NON_RETAIN
-   VAR 
+   VAR
       pi : Real;
       N : Int;
       Fs : Real;
@@ -32,12 +32,12 @@ END_DATA_BLOCK
 FUNCTION "polar" : "complex"
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
-   VAR_INPUT 
+   VAR_INPUT
       roh : Real;
       theta : Real;
    END_VAR
 
-   VAR_TEMP 
+   VAR_TEMP
       t : Real;
    END_VAR
 
@@ -50,12 +50,12 @@ END_FUNCTION
 FUNCTION "reverse" : Int
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
-   VAR_INPUT 
+   VAR_INPUT
       size : Int;
       index : Int;
    END_VAR
 
-   VAR_TEMP 
+   VAR_TEMP
       i : Int;
       clog2Size : Int;
       shift : DWord;
@@ -65,29 +65,29 @@ VERSION : 0.1
 
 BEGIN
 	#clog2Size := "clog2"( #size );
-	
+
 	#p := 0;
-	
+
 	FOR #i := 0 TO #clog2Size DO
-	    
+
 	    #shift := SHL(IN := dword#1, N := INT_TO_UINT(#clog2Size - #i));
-	    
+
 	    IF ( DWORD_TO_INT( INT_TO_DWORD(#index) AND #shift ) <> 0 ) THEN
-	        
+
 	        #p := #p OR SHL( IN := dword#1, N := INT_TO_UINT( #i - 1 ));
-	        
+
 	    END_IF;
-	    
+
 	END_FOR;
-	
+
 	#reverse := DWORD_TO_INT( #p );
-	
+
 END_FUNCTION
 
 FUNCTION "rpow" : Real
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
-   VAR_INPUT 
+   VAR_INPUT
       r : Real;
       e : Real;
    END_VAR
@@ -101,7 +101,7 @@ DATA_BLOCK "fftData"
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
 NON_RETAIN
-   VAR 
+   VAR
       data : Array[0..8192] of "complex";
    END_VAR
 
@@ -113,7 +113,7 @@ END_DATA_BLOCK
 FUNCTION "cabs" : Real
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
-   VAR_INPUT 
+   VAR_INPUT
       c : "complex";
    END_VAR
 
@@ -126,7 +126,7 @@ DATA_BLOCK "reverseData"
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
 NON_RETAIN
-   VAR 
+   VAR
       data : Array[0..8191] of "complex";
    END_VAR
 
@@ -139,7 +139,7 @@ DATA_BLOCK "ordianData"
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
 NON_RETAIN
-   VAR 
+   VAR
       data : Array[0..8191] of "complex";
    END_VAR
 
@@ -151,12 +151,12 @@ END_DATA_BLOCK
 FUNCTION "carg" : Real
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
-   VAR_INPUT 
+   VAR_INPUT
       im : Real;
       re : Real;
    END_VAR
 
-   VAR_TEMP 
+   VAR_TEMP
       arg : Real;
    END_VAR
 
@@ -164,52 +164,52 @@ VERSION : 0.1
 BEGIN
 	// special case positive imag value
 	IF ( #re = 0.0 AND #im >= 0.0 ) THEN
-	
+
 	    #arg := "inputData".pi / 2;
-	
+
 	// special case negative imag value
 	ELSIF ( #re = 0.0 AND #im < 0.0 ) THEN
-	
+
 	    #arg := - "inputData".pi / 2;
-	
+
 	// special real value
 	ELSIF ( #im = 0.0 AND #re >= 0.0 ) THEN
-	
+
 	    #arg := 0.0;
-	
+
 	// special real value
 	ELSIF ( #im = 0.0 AND #re < 0.0 ) THEN
-	    
+
 	    #arg := -2.0 * "inputData".pi;
-	    
+
 	// Q I
 	ELSIF (#re >= 0.0 AND #im >= 0.0) THEN
-	    
+
 	    #arg := ATAN(#im / #re);
-	    
+
 	// Q II and Q III
 	ELSIF (#re < 0.0) THEN
-	    
+
 	    #arg := ATAN(#im / #re) + "inputData".pi;
-	    
+
 	// Q IV
 	ELSE
-	    
+
 	    #arg := ATAN(#im / #re) + 2 * "inputData".pi;
-	    
+
 	END_IF;
-	
+
 	#carg := #arg;
-	
-	
-	
+
+
+
 END_FUNCTION
 
 DATA_BLOCK "window"
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
 NON_RETAIN
-   VAR 
+   VAR
       data : Array[0..4095] of "complex";
    END_VAR
 
@@ -221,11 +221,11 @@ END_DATA_BLOCK
 FUNCTION "ordian" : Void
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
-   VAR_INPUT 
+   VAR_INPUT
       size : Int;
    END_VAR
 
-   VAR_TEMP 
+   VAR_TEMP
       i : Int;
       reverse : Int;
    END_VAR
@@ -233,28 +233,28 @@ VERSION : 0.1
 
 BEGIN
 	FOR #i := 0 TO #size - 1 DO
-	    
+
 	    #reverse := "reverse"(size := #size, index := #i);
-	    
+
 	    "reverseData".data[ #i ] := "fftData".data[ #reverse ];
-	    
+
 	END_FOR;
-	
+
 	FOR #i := 0 TO #size - 1 DO
 	    "ordianData".data[#i] :="reverseData".data[#i];
 	END_FOR;
-	
+
 END_FUNCTION
 
 FUNCTION "cpow" : "complex"
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
-   VAR_INPUT 
+   VAR_INPUT
       a : "complex";
       x : Real;
    END_VAR
 
-   VAR_TEMP 
+   VAR_TEMP
       roh : Real;
       theta : Real;
    END_VAR
@@ -263,16 +263,16 @@ VERSION : 0.1
 BEGIN
 	#roh   := "rpow"(r := "cabs"(#a), e:= #x);
 	#theta := "carg"(im := #a.im, re := #a.re);
-	
+
 	#theta := #theta * #x;
-	
+
 	#cpow := "polar"( roh := #roh, theta := #theta );
 END_FUNCTION
 
 FUNCTION "ccsub" : "complex"
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
-   VAR_INPUT 
+   VAR_INPUT
       a : "complex";
       b : "complex";
    END_VAR
@@ -286,7 +286,7 @@ END_FUNCTION
 FUNCTION "ccmul" : "complex"
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
-   VAR_INPUT 
+   VAR_INPUT
       a : "complex";
       b : "complex";
    END_VAR
@@ -300,7 +300,7 @@ END_FUNCTION
 FUNCTION "log2" : Int
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
-   VAR_INPUT 
+   VAR_INPUT
       x : Int;
    END_VAR
 
@@ -312,7 +312,7 @@ END_FUNCTION
 FUNCTION "ccadd" : "complex"
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
-   VAR_INPUT 
+   VAR_INPUT
       a : "complex";
       b : "complex";
    END_VAR
@@ -327,7 +327,7 @@ DATA_BLOCK "fftAbsData"
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
 NON_RETAIN
-   VAR 
+   VAR
       data : Array[0..8191] of Real;
    END_VAR
 
@@ -340,7 +340,7 @@ DATA_BLOCK "fftResult"
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
 NON_RETAIN
-   VAR 
+   VAR
       data : Array[0..8191] of "complex";
    END_VAR
 
@@ -353,7 +353,7 @@ DATA_BLOCK "fftNormData"
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
 NON_RETAIN
-   VAR 
+   VAR
       data : Array[0..8191] of Real;
    END_VAR
 
@@ -365,7 +365,7 @@ END_DATA_BLOCK
 FUNCTION "crmul" : "complex"
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
-   VAR_INPUT 
+   VAR_INPUT
       a : "complex";
       b : Real;
    END_VAR
@@ -379,11 +379,11 @@ END_FUNCTION
 FUNCTION "transform" : Void
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
-   VAR_INPUT 
+   VAR_INPUT
       size : Int;
    END_VAR
 
-   VAR_TEMP 
+   VAR_TEMP
       i : Int;
       j : Int;
       k : Int;
@@ -400,55 +400,55 @@ VERSION : 0.1
 
 BEGIN
 	"ordian"( size := #size );
-	
+
 	#roh := 1.0;
 	#theta := -2.0 * "inputData".pi / INT_TO_REAL(#size);
-	
+
 	"window".data[1] := "polar"(roh := #roh, theta := #theta );
 	"window".data[0].re := 1.0;
 	"window".data[0].im := 0.0;
-	
+
 	FOR #i := 2 TO #size / 2 - 1 DO
-	    
+
 	    "window".data[#i] := "cpow"(a := "window".data[1], x := INT_TO_REAL(#i));
-	    
+
 	END_FOR;
-	
+
 	#n := 1;
 	#a := #size / 2;
-	
+
 	FOR #j := 0 TO "log2"( x:= #size ) - 1 DO
-	    
+
 	    FOR #k := 0 TO #size - 1 DO
-	        
+
 	        IF ( ( #k AND #n ) = dword#0 ) THEN
 	            #idxw := (#k * #a) MOD (#n * #a);
 	            #idxo := #k + #n;
-	            
+
 	            #temp1 := "ordianData".data[#k];
 	            #temp2 := "ccmul"(a := "window".data[#idxw], b := "ordianData".data[#idxo]);
-	            
+
 	            "ordianData".data[#k] := "ccadd"(a := #temp1, b := #temp2);
 	            "ordianData".data[#k + #n] := "ccsub"(a := #temp1, b := #temp2);
 	        END_IF;
-	        
+
 	    END_FOR;
-	    
+
 	    #n := #n * 2;
 	    #a := #a / 2;
-	    
+
 	END_FOR;
-	
+
 END_FUNCTION
 
 FUNCTION "lfsr14" : Int
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
-   VAR_INPUT 
+   VAR_INPUT
       seed : Int;
    END_VAR
 
-   VAR_TEMP 
+   VAR_TEMP
       s : Int;
       p : Int;
    END_VAR
@@ -456,89 +456,89 @@ VERSION : 0.1
 
 BEGIN
 	#s := #seed * 2;
-	
+
 	#p := BOOL_TO_INT(#s.%X14 XOR #s.%X13 XOR #s.%X12 XOR #s.%X2);
-	
+
 	#s := #s + #p;
-	
+
 	#lfsr14 := #s AND 16#3fff;
-	
+
 END_FUNCTION
 
 FUNCTION "fftNorm" : Void
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
-   VAR_INPUT 
+   VAR_INPUT
       norm : Real;
       size : Int;
    END_VAR
 
-   VAR_TEMP 
+   VAR_TEMP
       i : Int;
    END_VAR
 
 
 BEGIN
 	FOR #i := 0 TO #size - 1 DO
-	    
+
 	    "fftNormData".data[#i] := #norm * "fftAbsData".data[#i];
-	    
+
 	END_FOR;
-	
+
 END_FUNCTION
 
 FUNCTION "fftAbs" : Void
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
-   VAR_INPUT 
+   VAR_INPUT
       size : Int;
    END_VAR
 
-   VAR_TEMP 
+   VAR_TEMP
       i : Int;
    END_VAR
 
 
 BEGIN
 	FOR #i := 0 TO #size - 1 DO
-	    
+
 	    "fftAbsData".data[#i] := ABS("fftResult".data[#i].im);
-	    
+
 	END_FOR;
 END_FUNCTION
 
 FUNCTION "fft" : Void
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
-   VAR_INPUT 
+   VAR_INPUT
       d : Real;
       size : Int;
    END_VAR
 
-   VAR_TEMP 
+   VAR_TEMP
       i : Int;
    END_VAR
 
 
 BEGIN
 	"transform"( size := #size );
-	
+
 	FOR #i := 0 TO #size - 1 DO
-	    
+
 	    "fftResult".data[#i] :="crmul"( a :="ordianData".data[#i], b := #d );
-	    
+
 	END_FOR;
-	
+
 END_FUNCTION
 
 FUNCTION "init" : Void
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
-   VAR_INPUT 
+   VAR_INPUT
       size : Int;
    END_VAR
 
-   VAR_TEMP 
+   VAR_TEMP
       i : Int;
       sin1 : Real;
       sin2 : Real;
@@ -553,37 +553,37 @@ BEGIN
 	"inputData".Fs := 1000.0;
 	"inputData".t1 := 50.0 / "inputData".Fs;
 	"inputData".t2 := 120.0 / "inputData".Fs;
-	
+
 	#seed := 42;
-	
+
 	FOR #i := 0 TO #size - 1 DO
-	    
+
 	    #sin1 := 0.7 * SIN(2 * "inputData".pi * "inputData".t1 * INT_TO_REAL(#i));
 	    #sin2 :=       SIN(2 * "inputData".pi * "inputData".t2 * INT_TO_REAL(#i));
-	    
+
 	    #seed := "lfsr14"( #seed );
-	    
+
 	    #randReal := INT_TO_REAL( ABS( #seed ) ) / 16383.0 * 4.0 - 2.0;
 	    #randReal := 0.0;
-	    
+
 	    #r := #sin1 + #sin2 + #randReal;
-	    
+
 	    "inputData".signal[#i] := #r;
-	    
+
 	    #c.re := #r;
 	    #c.im := 0.0;
-	    
+
 	    "fftData".data[#i] := #c;
-	    
+
 	END_FOR;
-	
+
 END_FUNCTION
 
 ORGANIZATION_BLOCK "main"
 TITLE = "Main Program Sweep (Cycle)"
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
-   VAR_TEMP 
+   VAR_TEMP
       size : Int;
       i : DInt;
    END_VAR
@@ -591,28 +591,28 @@ VERSION : 0.1
 
 BEGIN
 	FOR #i := 0 TO 10 DO
-	    
+
 	    #size := 4096;
-	    
+
 	    "init"(size := #size);
-	    
+
 	    "fft"(d := 1.0,
 	          size := #size);
-	    
+
 	    "fftAbs"(size := #size / 2);
-	    
+
 	    "fftNorm"(norm := 2 * "inputData".Fs / #size,
 	              size := #size / 2);
-	    
+
 	END_FOR;
-	
+
 END_ORGANIZATION_BLOCK
 
 DATA_BLOCK "debug"
 { S7_Optimized_Access := 'TRUE' }
 VERSION : 0.1
 NON_RETAIN
-   VAR 
+   VAR
       index : DInt;
       ctr : DInt;
       data : Array[0..8192] of Real;

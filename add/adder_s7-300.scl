@@ -1,23 +1,23 @@
 FUNCTION_BLOCK "adder0"
 { S7_Optimized_Access := 'FALSE' }
 VERSION : 0.1
-    VAR_INPUT 
+    VAR_INPUT
        cin : Bool;
        ain : DWord;
        bin : DWord;
     END_VAR
 
-    VAR_OUTPUT 
+    VAR_OUTPUT
        cout : Bool;
     END_VAR
 
-    VAR 
+    VAR
         a : Array[0..511] of Bool;
         b : Array[0..511] of Bool;
         s : Array[0..511] of Bool;
     END_VAR
 
-    VAR_TEMP 
+    VAR_TEMP
         i : DInt;
         j : DInt;
         ain_i : DWord;
@@ -3905,23 +3905,23 @@ END_DATA_BLOCK
 FUNCTION_BLOCK "adder1"
 { S7_Optimized_Access := 'FALSE' }
 VERSION : 0.1
-    VAR_INPUT 
+    VAR_INPUT
        cin : Bool;
        ain : DWord;
        bin : DWord;
     END_VAR
 
-    VAR_OUTPUT 
+    VAR_OUTPUT
        cout : Bool;
     END_VAR
 
-    VAR 
+    VAR
         a : Array[0..511] of Bool;
         b : Array[0..511] of Bool;
         s : Array[0..511] of Bool;
     END_VAR
 
-    VAR_TEMP 
+    VAR_TEMP
         i : DInt;
         j : DInt;
         ain_i : DWord;
@@ -7809,23 +7809,23 @@ END_DATA_BLOCK
 FUNCTION_BLOCK "adder2"
 { S7_Optimized_Access := 'FALSE' }
 VERSION : 0.1
-    VAR_INPUT 
+    VAR_INPUT
        cin : Bool;
        ain : DWord;
        bin : DWord;
     END_VAR
 
-    VAR_OUTPUT 
+    VAR_OUTPUT
        cout : Bool;
     END_VAR
 
-    VAR 
+    VAR
         a : Array[0..511] of Bool;
         b : Array[0..511] of Bool;
         s : Array[0..511] of Bool;
     END_VAR
 
-    VAR_TEMP 
+    VAR_TEMP
         i : DInt;
         j : DInt;
         ain_i : DWord;
@@ -11715,7 +11715,7 @@ TITLE = "Main Program Sweep (Cycle)"
 
 VERSION : 0.1
 
-    VAR_TEMP 
+    VAR_TEMP
         dummy : array [ 0 .. 4 ] of Dword;
         i     : Dint;
         c     : Bool;

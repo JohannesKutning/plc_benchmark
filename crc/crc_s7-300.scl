@@ -74,12 +74,12 @@ FUNCTION_BLOCK "crc0"
 { S7_Optimized_Access := 'FALSE' }
 VERSION : 0.1
 
-   VAR 
+   VAR
       crc : DWord;
       data_in : Array[0..32767] of Byte;
    END_VAR
 
-   VAR_TEMP 
+   VAR_TEMP
       i : Dint;
    END_VAR
 
@@ -111,12 +111,12 @@ FUNCTION_BLOCK "crc1"
 { S7_Optimized_Access := 'FALSE' }
 VERSION : 0.1
 
-   VAR 
+   VAR
       crc : DWord;
       data_in : Array[0..32767] of Byte;
    END_VAR
 
-   VAR_TEMP 
+   VAR_TEMP
       i : Dint;
    END_VAR
 
@@ -148,12 +148,12 @@ FUNCTION_BLOCK "crc2"
 { S7_Optimized_Access := 'FALSE' }
 VERSION : 0.1
 
-   VAR 
+   VAR
       crc : DWord;
       data_in : Array[0..32767] of Byte;
    END_VAR
 
-   VAR_TEMP 
+   VAR_TEMP
       i : Dint;
    END_VAR
 
@@ -185,12 +185,12 @@ FUNCTION_BLOCK "crc3"
 { S7_Optimized_Access := 'FALSE' }
 VERSION : 0.1
 
-   VAR 
+   VAR
       crc : DWord;
       data_in : Array[0..32767] of Byte;
    END_VAR
 
-   VAR_TEMP 
+   VAR_TEMP
       i : Dint;
    END_VAR
 
@@ -222,12 +222,12 @@ FUNCTION_BLOCK "crc4"
 { S7_Optimized_Access := 'FALSE' }
 VERSION : 0.1
 
-   VAR 
+   VAR
       crc : DWord;
       data_in : Array[0..32767] of Byte;
    END_VAR
 
-   VAR_TEMP 
+   VAR_TEMP
       i : Dint;
    END_VAR
 
@@ -259,12 +259,12 @@ FUNCTION_BLOCK "crc5"
 { S7_Optimized_Access := 'FALSE' }
 VERSION : 0.1
 
-   VAR 
+   VAR
       crc : DWord;
       data_in : Array[0..32767] of Byte;
    END_VAR
 
-   VAR_TEMP 
+   VAR_TEMP
       i : Dint;
    END_VAR
 
@@ -296,12 +296,12 @@ FUNCTION_BLOCK "crc6"
 { S7_Optimized_Access := 'FALSE' }
 VERSION : 0.1
 
-   VAR 
+   VAR
       crc : DWord;
       data_in : Array[0..32767] of Byte;
    END_VAR
 
-   VAR_TEMP 
+   VAR_TEMP
       i : Dint;
    END_VAR
 
@@ -334,7 +334,7 @@ TITLE = "Main Program Sweep (Cycle)"
 
 VERSION : 0.1
 
-    VAR_TEMP 
+    VAR_TEMP
         dummy : array [ 0 .. 4 ] of Dword;
         i     : Dint;
         c     : Bool;
