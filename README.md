@@ -46,6 +46,26 @@ The CRC algorithm is part of the OSCAT library and part of real PLC programs.
 
 # Finite State Machine (fsm)
 
+A synthetic finite state machine program is used to benchmark the boolean
+logic, integer logic and branch instructions.
+The program is split into an input network, a state transition network and an
+output network.
+A [state machine generator](https://github.com/JohannesKutning/fsm_generator)
+is used to generate the synthetic state machine and derive the STL source code.
+The input and output networks are based on boolean logic instruction and the
+state transition network uses a swtich-case style with integer comparision
+operations.
+The generation uses the follwoing arguments:
+
+    state-count      | 128
+    iterations       | 16384
+    transition-count | 3
+    input_width      | 32
+    output_width     | 32
+    seed             | 42
+    max_net_length   | 5
+    min_net_prob     | 0.1
+
 # Data Handling (data)
 
 # PDI Controller (pid)
