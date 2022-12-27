@@ -1,0 +1,364 @@
+FUNCTION_BLOCK "crc"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+   VAR_INPUT
+      data_in : Byte;
+      crc_in : DWord;
+   END_VAR
+
+   VAR_OUTPUT
+      crc_out : DWord;
+   END_VAR
+
+   VAR_TEMP
+      data_in_i : Byte;
+      data_in_bool AT data_in_i : Array[0..7] of Bool;
+      crc_in_i : DWord;
+      crc_in_bool AT crc_in_i : Array[0..31] of Bool;
+      crc_res_i : DWord;
+      crc_res_bool AT crc_res_i : Array[0..31] of Bool;
+   END_VAR
+
+BEGIN
+
+       #crc_in_i  := #crc_in;
+       #data_in_i := #data_in;
+
+	    #crc_res_bool[0] := #data_in_bool[6] XOR #data_in_bool[0] XOR #crc_in_bool[24] XOR #crc_in_bool[30];
+	    #crc_res_bool[1] := #data_in_bool[7] XOR #data_in_bool[6] XOR #data_in_bool[1] XOR #data_in_bool[0] XOR #crc_in_bool[24] XOR #crc_in_bool[25] XOR #crc_in_bool[30] XOR #crc_in_bool[31];
+	    #crc_res_bool[2] := #data_in_bool[7] XOR #data_in_bool[6] XOR #data_in_bool[2] XOR #data_in_bool[1] XOR #data_in_bool[0] XOR #crc_in_bool[24] XOR #crc_in_bool[25] XOR #crc_in_bool[26] XOR #crc_in_bool[30] XOR #crc_in_bool[31];
+	    #crc_res_bool[3] := #data_in_bool[7] XOR #data_in_bool[3] XOR #data_in_bool[2] XOR #data_in_bool[1] XOR #crc_in_bool[25] XOR #crc_in_bool[26] XOR #crc_in_bool[27] XOR #crc_in_bool[31];
+	    #crc_res_bool[4] := #data_in_bool[6] XOR #data_in_bool[4] XOR #data_in_bool[3] XOR #data_in_bool[2] XOR #data_in_bool[0] XOR #crc_in_bool[24] XOR #crc_in_bool[26] XOR #crc_in_bool[27] XOR #crc_in_bool[28] XOR #crc_in_bool[30];
+	    #crc_res_bool[5] := #data_in_bool[7] XOR #data_in_bool[6] XOR #data_in_bool[5] XOR #data_in_bool[4] XOR #data_in_bool[3] XOR #data_in_bool[1] XOR #data_in_bool[0] XOR #crc_in_bool[24] XOR #crc_in_bool[25] XOR #crc_in_bool[27] XOR #crc_in_bool[28] XOR #crc_in_bool[29] XOR #crc_in_bool[30] XOR #crc_in_bool[31];
+	    #crc_res_bool[6] := #data_in_bool[7] XOR #data_in_bool[6] XOR #data_in_bool[5] XOR #data_in_bool[4] XOR #data_in_bool[2] XOR #data_in_bool[1] XOR #crc_in_bool[25] XOR #crc_in_bool[26] XOR #crc_in_bool[28] XOR #crc_in_bool[29] XOR #crc_in_bool[30] XOR #crc_in_bool[31];
+	    #crc_res_bool[7] := #data_in_bool[7] XOR #data_in_bool[5] XOR #data_in_bool[3] XOR #data_in_bool[2] XOR #data_in_bool[0] XOR #crc_in_bool[24] XOR #crc_in_bool[26] XOR #crc_in_bool[27] XOR #crc_in_bool[29] XOR #crc_in_bool[31];
+	    #crc_res_bool[8] := #data_in_bool[4] XOR #data_in_bool[3] XOR #data_in_bool[1] XOR #data_in_bool[0] XOR #crc_in_bool[0] XOR #crc_in_bool[24] XOR #crc_in_bool[25] XOR #crc_in_bool[27] XOR #crc_in_bool[28];
+	    #crc_res_bool[9] := #data_in_bool[5] XOR #data_in_bool[4] XOR #data_in_bool[2] XOR #data_in_bool[1] XOR #crc_in_bool[1] XOR #crc_in_bool[25] XOR #crc_in_bool[26] XOR #crc_in_bool[28] XOR #crc_in_bool[29];
+	    #crc_res_bool[10] := #data_in_bool[5] XOR #data_in_bool[3] XOR #data_in_bool[2] XOR #data_in_bool[0] XOR #crc_in_bool[2] XOR #crc_in_bool[24] XOR #crc_in_bool[26] XOR #crc_in_bool[27] XOR #crc_in_bool[29];
+	    #crc_res_bool[11] := #data_in_bool[4] XOR #data_in_bool[3] XOR #data_in_bool[1] XOR #data_in_bool[0] XOR #crc_in_bool[3] XOR #crc_in_bool[24] XOR #crc_in_bool[25] XOR #crc_in_bool[27] XOR #crc_in_bool[28];
+	    #crc_res_bool[12] := #data_in_bool[6] XOR #data_in_bool[5] XOR #data_in_bool[4] XOR #data_in_bool[2] XOR #data_in_bool[1] XOR #data_in_bool[0] XOR #crc_in_bool[4] XOR #crc_in_bool[24] XOR #crc_in_bool[25] XOR #crc_in_bool[26] XOR #crc_in_bool[28] XOR #crc_in_bool[29] XOR #crc_in_bool[30];
+	    #crc_res_bool[13] := #data_in_bool[7] XOR #data_in_bool[6] XOR #data_in_bool[5] XOR #data_in_bool[3] XOR #data_in_bool[2] XOR #data_in_bool[1] XOR #crc_in_bool[5] XOR #crc_in_bool[25] XOR #crc_in_bool[26] XOR #crc_in_bool[27] XOR #crc_in_bool[29] XOR #crc_in_bool[30] XOR #crc_in_bool[31];
+	    #crc_res_bool[14] := #data_in_bool[7] XOR #data_in_bool[6] XOR #data_in_bool[4] XOR #data_in_bool[3] XOR #data_in_bool[2] XOR #crc_in_bool[6] XOR #crc_in_bool[26] XOR #crc_in_bool[27] XOR #crc_in_bool[28] XOR #crc_in_bool[30] XOR #crc_in_bool[31];
+	    #crc_res_bool[15] := #data_in_bool[7] XOR #data_in_bool[5] XOR #data_in_bool[4] XOR #data_in_bool[3] XOR #crc_in_bool[7] XOR #crc_in_bool[27] XOR #crc_in_bool[28] XOR #crc_in_bool[29] XOR #crc_in_bool[31];
+	    #crc_res_bool[16] := #data_in_bool[5] XOR #data_in_bool[4] XOR #data_in_bool[0] XOR #crc_in_bool[8] XOR #crc_in_bool[24] XOR #crc_in_bool[28] XOR #crc_in_bool[29];
+	    #crc_res_bool[17] := #data_in_bool[6] XOR #data_in_bool[5] XOR #data_in_bool[1] XOR #crc_in_bool[9] XOR #crc_in_bool[25] XOR #crc_in_bool[29] XOR #crc_in_bool[30];
+	    #crc_res_bool[18] := #data_in_bool[7] XOR #data_in_bool[6] XOR #data_in_bool[2] XOR #crc_in_bool[10] XOR #crc_in_bool[26] XOR #crc_in_bool[30] XOR #crc_in_bool[31];
+	    #crc_res_bool[19] := #data_in_bool[7] XOR #data_in_bool[3] XOR #crc_in_bool[11] XOR #crc_in_bool[27] XOR #crc_in_bool[31];
+	    #crc_res_bool[20] := #data_in_bool[4] XOR #crc_in_bool[12] XOR #crc_in_bool[28];
+	    #crc_res_bool[21] := #data_in_bool[5] XOR #crc_in_bool[13] XOR #crc_in_bool[29];
+	    #crc_res_bool[22] := #data_in_bool[0] XOR #crc_in_bool[14] XOR #crc_in_bool[24];
+	    #crc_res_bool[23] := #data_in_bool[6] XOR #data_in_bool[1] XOR #data_in_bool[0] XOR #crc_in_bool[15] XOR #crc_in_bool[24] XOR #crc_in_bool[25] XOR #crc_in_bool[30];
+	    #crc_res_bool[24] := #data_in_bool[7] XOR #data_in_bool[2] XOR #data_in_bool[1] XOR #crc_in_bool[16] XOR #crc_in_bool[25] XOR #crc_in_bool[26] XOR #crc_in_bool[31];
+	    #crc_res_bool[25] := #data_in_bool[3] XOR #data_in_bool[2] XOR #crc_in_bool[17] XOR #crc_in_bool[26] XOR #crc_in_bool[27];
+	    #crc_res_bool[26] := #data_in_bool[6] XOR #data_in_bool[4] XOR #data_in_bool[3] XOR #data_in_bool[0] XOR #crc_in_bool[18] XOR #crc_in_bool[24] XOR #crc_in_bool[27] XOR #crc_in_bool[28] XOR #crc_in_bool[30];
+	    #crc_res_bool[27] := #data_in_bool[7] XOR #data_in_bool[5] XOR #data_in_bool[4] XOR #data_in_bool[1] XOR #crc_in_bool[19] XOR #crc_in_bool[25] XOR #crc_in_bool[28] XOR #crc_in_bool[29] XOR #crc_in_bool[31];
+	    #crc_res_bool[28] := #data_in_bool[6] XOR #data_in_bool[5] XOR #data_in_bool[2] XOR #crc_in_bool[20] XOR #crc_in_bool[26] XOR #crc_in_bool[29] XOR #crc_in_bool[30];
+	    #crc_res_bool[29] := #data_in_bool[7] XOR #data_in_bool[6] XOR #data_in_bool[3] XOR #crc_in_bool[21] XOR #crc_in_bool[27] XOR #crc_in_bool[30] XOR #crc_in_bool[31];
+	    #crc_res_bool[30] := #data_in_bool[7] XOR #data_in_bool[4] XOR #crc_in_bool[22] XOR #crc_in_bool[28] XOR #crc_in_bool[31];
+	    #crc_res_bool[31] := #data_in_bool[5] XOR #crc_in_bool[23] XOR #crc_in_bool[29];
+
+       #crc_out := #crc_res_i;
+
+END_FUNCTION_BLOCK
+
+DATA_BLOCK "crcFunction"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+NON_RETAIN
+"crc"
+
+BEGIN
+
+END_DATA_BLOCK
+FUNCTION_BLOCK "crc0"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+
+   VAR 
+      crc : DWord;
+      data_in : Array[0..32767] of Byte;
+   END_VAR
+
+   VAR_TEMP 
+      i : Dint;
+   END_VAR
+
+BEGIN
+
+   // data initialization
+	FOR #i := 0 TO 32767 DO
+       data_in[ #i ] := DINT_TO_BYTE( #i );
+	END_FOR;
+
+   // crc calculation
+	FOR #i := 0 TO 32767 DO
+	  "crcFunction"(data_in := #data_in[#i],
+	        crc_in := #crc,
+	        crc_out => #crc);
+	END_FOR;
+
+END_FUNCTION_BLOCK
+DATA_BLOCK "crc0_0"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+"crc0"
+
+BEGIN
+
+END_DATA_BLOCK
+
+FUNCTION_BLOCK "crc1"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+
+   VAR 
+      crc : DWord;
+      data_in : Array[0..32767] of Byte;
+   END_VAR
+
+   VAR_TEMP 
+      i : Dint;
+   END_VAR
+
+BEGIN
+
+   // data initialization
+	FOR #i := 0 TO 32767 DO
+       data_in[ #i ] := DINT_TO_BYTE( #i );
+	END_FOR;
+
+   // crc calculation
+	FOR #i := 0 TO 32767 DO
+	  "crcFunction"(data_in := #data_in[#i],
+	        crc_in := #crc,
+	        crc_out => #crc);
+	END_FOR;
+
+END_FUNCTION_BLOCK
+DATA_BLOCK "crc1_0"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+"crc1"
+
+BEGIN
+
+END_DATA_BLOCK
+
+FUNCTION_BLOCK "crc2"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+
+   VAR 
+      crc : DWord;
+      data_in : Array[0..32767] of Byte;
+   END_VAR
+
+   VAR_TEMP 
+      i : Dint;
+   END_VAR
+
+BEGIN
+
+   // data initialization
+	FOR #i := 0 TO 32767 DO
+       data_in[ #i ] := DINT_TO_BYTE( #i );
+	END_FOR;
+
+   // crc calculation
+	FOR #i := 0 TO 32767 DO
+	  "crcFunction"(data_in := #data_in[#i],
+	        crc_in := #crc,
+	        crc_out => #crc);
+	END_FOR;
+
+END_FUNCTION_BLOCK
+DATA_BLOCK "crc2_0"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+"crc2"
+
+BEGIN
+
+END_DATA_BLOCK
+
+FUNCTION_BLOCK "crc3"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+
+   VAR 
+      crc : DWord;
+      data_in : Array[0..32767] of Byte;
+   END_VAR
+
+   VAR_TEMP 
+      i : Dint;
+   END_VAR
+
+BEGIN
+
+   // data initialization
+	FOR #i := 0 TO 32767 DO
+       data_in[ #i ] := DINT_TO_BYTE( #i );
+	END_FOR;
+
+   // crc calculation
+	FOR #i := 0 TO 32767 DO
+	  "crcFunction"(data_in := #data_in[#i],
+	        crc_in := #crc,
+	        crc_out => #crc);
+	END_FOR;
+
+END_FUNCTION_BLOCK
+DATA_BLOCK "crc3_0"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+"crc3"
+
+BEGIN
+
+END_DATA_BLOCK
+
+FUNCTION_BLOCK "crc4"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+
+   VAR 
+      crc : DWord;
+      data_in : Array[0..32767] of Byte;
+   END_VAR
+
+   VAR_TEMP 
+      i : Dint;
+   END_VAR
+
+BEGIN
+
+   // data initialization
+	FOR #i := 0 TO 32767 DO
+       data_in[ #i ] := DINT_TO_BYTE( #i );
+	END_FOR;
+
+   // crc calculation
+	FOR #i := 0 TO 32767 DO
+	  "crcFunction"(data_in := #data_in[#i],
+	        crc_in := #crc,
+	        crc_out => #crc);
+	END_FOR;
+
+END_FUNCTION_BLOCK
+DATA_BLOCK "crc4_0"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+"crc4"
+
+BEGIN
+
+END_DATA_BLOCK
+
+FUNCTION_BLOCK "crc5"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+
+   VAR 
+      crc : DWord;
+      data_in : Array[0..32767] of Byte;
+   END_VAR
+
+   VAR_TEMP 
+      i : Dint;
+   END_VAR
+
+BEGIN
+
+   // data initialization
+	FOR #i := 0 TO 32767 DO
+       data_in[ #i ] := DINT_TO_BYTE( #i );
+	END_FOR;
+
+   // crc calculation
+	FOR #i := 0 TO 32767 DO
+	  "crcFunction"(data_in := #data_in[#i],
+	        crc_in := #crc,
+	        crc_out => #crc);
+	END_FOR;
+
+END_FUNCTION_BLOCK
+DATA_BLOCK "crc5_0"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+"crc5"
+
+BEGIN
+
+END_DATA_BLOCK
+
+FUNCTION_BLOCK "crc6"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+
+   VAR 
+      crc : DWord;
+      data_in : Array[0..32767] of Byte;
+   END_VAR
+
+   VAR_TEMP 
+      i : Dint;
+   END_VAR
+
+BEGIN
+
+   // data initialization
+	FOR #i := 0 TO 32767 DO
+       data_in[ #i ] := DINT_TO_BYTE( #i );
+	END_FOR;
+
+   // crc calculation
+	FOR #i := 0 TO 32767 DO
+	  "crcFunction"(data_in := #data_in[#i],
+	        crc_in := #crc,
+	        crc_out => #crc);
+	END_FOR;
+
+END_FUNCTION_BLOCK
+DATA_BLOCK "crc6_0"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+"crc6"
+
+BEGIN
+
+END_DATA_BLOCK
+
+ORGANIZATION_BLOCK "main"
+TITLE = "Main Program Sweep (Cycle)"
+
+VERSION : 0.1
+
+    VAR_TEMP 
+        dummy : array [ 0 .. 4 ] of Dword;
+        i     : Dint;
+        c     : Bool;
+    END_VAR
+
+BEGIN
+
+    FOR #i := 0 TO 0 DO
+
+        "crc0_0"();
+
+        "crc1_0"();
+
+        "crc2_0"();
+
+        "crc3_0"();
+
+        "crc4_0"();
+
+        "crc5_0"();
+
+        "crc6_0"();
+
+
+    END_FOR;
+END_ORGANIZATION_BLOCK
+

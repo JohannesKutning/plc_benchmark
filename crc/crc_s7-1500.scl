@@ -1,0 +1,378 @@
+﻿FUNCTION_BLOCK "crc"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      data_in : Byte;
+      crc_in : DWord;
+   END_VAR
+
+   VAR_OUTPUT 
+      crc_out : DWord;
+   END_VAR
+
+   VAR_TEMP 
+      data_in_i : Byte;
+      crc_in_i : DWord;
+      crc_res_i : DWord;
+   END_VAR
+
+
+BEGIN
+	
+	#crc_in_i := #crc_in;
+	#data_in_i := #data_in;
+	
+	#crc_res_i.%X0 := #data_in_i.%X6 XOR #data_in_i.%X0 XOR #crc_in_i.%X24 XOR #crc_in_i.%X30;
+	#crc_res_i.%X1 := #data_in_i.%X7 XOR #data_in_i.%X6 XOR #data_in_i.%X1 XOR #data_in_i.%X0 XOR #crc_in_i.%X24 XOR #crc_in_i.%X25 XOR #crc_in_i.%X30 XOR #crc_in_i.%X31;
+	#crc_res_i.%X2 := #data_in_i.%X7 XOR #data_in_i.%X6 XOR #data_in_i.%X2 XOR #data_in_i.%X1 XOR #data_in_i.%X0 XOR #crc_in_i.%X24 XOR #crc_in_i.%X25 XOR #crc_in_i.%X26 XOR #crc_in_i.%X30 XOR #crc_in_i.%X31;
+	#crc_res_i.%X3 := #data_in_i.%X7 XOR #data_in_i.%X3 XOR #data_in_i.%X2 XOR #data_in_i.%X1 XOR #crc_in_i.%X25 XOR #crc_in_i.%X26 XOR #crc_in_i.%X27 XOR #crc_in_i.%X31;
+	#crc_res_i.%X4 := #data_in_i.%X6 XOR #data_in_i.%X4 XOR #data_in_i.%X3 XOR #data_in_i.%X2 XOR #data_in_i.%X0 XOR #crc_in_i.%X24 XOR #crc_in_i.%X26 XOR #crc_in_i.%X27 XOR #crc_in_i.%X28 XOR #crc_in_i.%X30;
+	#crc_res_i.%X5 := #data_in_i.%X7 XOR #data_in_i.%X6 XOR #data_in_i.%X5 XOR #data_in_i.%X4 XOR #data_in_i.%X3 XOR #data_in_i.%X1 XOR #data_in_i.%X0 XOR #crc_in_i.%X24 XOR #crc_in_i.%X25 XOR #crc_in_i.%X27 XOR #crc_in_i.%X28 XOR #crc_in_i.%X29 XOR #crc_in_i.%X30 XOR #crc_in_i.%X31;
+	#crc_res_i.%X6 := #data_in_i.%X7 XOR #data_in_i.%X6 XOR #data_in_i.%X5 XOR #data_in_i.%X4 XOR #data_in_i.%X2 XOR #data_in_i.%X1 XOR #crc_in_i.%X25 XOR #crc_in_i.%X26 XOR #crc_in_i.%X28 XOR #crc_in_i.%X29 XOR #crc_in_i.%X30 XOR #crc_in_i.%X31;
+	#crc_res_i.%X7 := #data_in_i.%X7 XOR #data_in_i.%X5 XOR #data_in_i.%X3 XOR #data_in_i.%X2 XOR #data_in_i.%X0 XOR #crc_in_i.%X24 XOR #crc_in_i.%X26 XOR #crc_in_i.%X27 XOR #crc_in_i.%X29 XOR #crc_in_i.%X31;
+	#crc_res_i.%X8 := #data_in_i.%X4 XOR #data_in_i.%X3 XOR #data_in_i.%X1 XOR #data_in_i.%X0 XOR #crc_in_i.%X0 XOR #crc_in_i.%X24 XOR #crc_in_i.%X25 XOR #crc_in_i.%X27 XOR #crc_in_i.%X28;
+	#crc_res_i.%X9 := #data_in_i.%X5 XOR #data_in_i.%X4 XOR #data_in_i.%X2 XOR #data_in_i.%X1 XOR #crc_in_i.%X1 XOR #crc_in_i.%X25 XOR #crc_in_i.%X26 XOR #crc_in_i.%X28 XOR #crc_in_i.%X29;
+	#crc_res_i.%X10 := #data_in_i.%X5 XOR #data_in_i.%X3 XOR #data_in_i.%X2 XOR #data_in_i.%X0 XOR #crc_in_i.%X2 XOR #crc_in_i.%X24 XOR #crc_in_i.%X26 XOR #crc_in_i.%X27 XOR #crc_in_i.%X29;
+	#crc_res_i.%X11 := #data_in_i.%X4 XOR #data_in_i.%X3 XOR #data_in_i.%X1 XOR #data_in_i.%X0 XOR #crc_in_i.%X3 XOR #crc_in_i.%X24 XOR #crc_in_i.%X25 XOR #crc_in_i.%X27 XOR #crc_in_i.%X28;
+	#crc_res_i.%X12 := #data_in_i.%X6 XOR #data_in_i.%X5 XOR #data_in_i.%X4 XOR #data_in_i.%X2 XOR #data_in_i.%X1 XOR #data_in_i.%X0 XOR #crc_in_i.%X4 XOR #crc_in_i.%X24 XOR #crc_in_i.%X25 XOR #crc_in_i.%X26 XOR #crc_in_i.%X28 XOR #crc_in_i.%X29 XOR #crc_in_i.%X30;
+	#crc_res_i.%X13 := #data_in_i.%X7 XOR #data_in_i.%X6 XOR #data_in_i.%X5 XOR #data_in_i.%X3 XOR #data_in_i.%X2 XOR #data_in_i.%X1 XOR #crc_in_i.%X5 XOR #crc_in_i.%X25 XOR #crc_in_i.%X26 XOR #crc_in_i.%X27 XOR #crc_in_i.%X29 XOR #crc_in_i.%X30 XOR #crc_in_i.%X31;
+	#crc_res_i.%X14 := #data_in_i.%X7 XOR #data_in_i.%X6 XOR #data_in_i.%X4 XOR #data_in_i.%X3 XOR #data_in_i.%X2 XOR #crc_in_i.%X6 XOR #crc_in_i.%X26 XOR #crc_in_i.%X27 XOR #crc_in_i.%X28 XOR #crc_in_i.%X30 XOR #crc_in_i.%X31;
+	#crc_res_i.%X15 := #data_in_i.%X7 XOR #data_in_i.%X5 XOR #data_in_i.%X4 XOR #data_in_i.%X3 XOR #crc_in_i.%X7 XOR #crc_in_i.%X27 XOR #crc_in_i.%X28 XOR #crc_in_i.%X29 XOR #crc_in_i.%X31;
+	#crc_res_i.%X16 := #data_in_i.%X5 XOR #data_in_i.%X4 XOR #data_in_i.%X0 XOR #crc_in_i.%X8 XOR #crc_in_i.%X24 XOR #crc_in_i.%X28 XOR #crc_in_i.%X29;
+	#crc_res_i.%X17 := #data_in_i.%X6 XOR #data_in_i.%X5 XOR #data_in_i.%X1 XOR #crc_in_i.%X9 XOR #crc_in_i.%X25 XOR #crc_in_i.%X29 XOR #crc_in_i.%X30;
+	#crc_res_i.%X18 := #data_in_i.%X7 XOR #data_in_i.%X6 XOR #data_in_i.%X2 XOR #crc_in_i.%X10 XOR #crc_in_i.%X26 XOR #crc_in_i.%X30 XOR #crc_in_i.%X31;
+	#crc_res_i.%X19 := #data_in_i.%X7 XOR #data_in_i.%X3 XOR #crc_in_i.%X11 XOR #crc_in_i.%X27 XOR #crc_in_i.%X31;
+	#crc_res_i.%X20 := #data_in_i.%X4 XOR #crc_in_i.%X12 XOR #crc_in_i.%X28;
+	#crc_res_i.%X21 := #data_in_i.%X5 XOR #crc_in_i.%X13 XOR #crc_in_i.%X29;
+	#crc_res_i.%X22 := #data_in_i.%X0 XOR #crc_in_i.%X14 XOR #crc_in_i.%X24;
+	#crc_res_i.%X23 := #data_in_i.%X6 XOR #data_in_i.%X1 XOR #data_in_i.%X0 XOR #crc_in_i.%X15 XOR #crc_in_i.%X24 XOR #crc_in_i.%X25 XOR #crc_in_i.%X30;
+	#crc_res_i.%X24 := #data_in_i.%X7 XOR #data_in_i.%X2 XOR #data_in_i.%X1 XOR #crc_in_i.%X16 XOR #crc_in_i.%X25 XOR #crc_in_i.%X26 XOR #crc_in_i.%X31;
+	#crc_res_i.%X25 := #data_in_i.%X3 XOR #data_in_i.%X2 XOR #crc_in_i.%X17 XOR #crc_in_i.%X26 XOR #crc_in_i.%X27;
+	#crc_res_i.%X26 := #data_in_i.%X6 XOR #data_in_i.%X4 XOR #data_in_i.%X3 XOR #data_in_i.%X0 XOR #crc_in_i.%X18 XOR #crc_in_i.%X24 XOR #crc_in_i.%X27 XOR #crc_in_i.%X28 XOR #crc_in_i.%X30;
+	#crc_res_i.%X27 := #data_in_i.%X7 XOR #data_in_i.%X5 XOR #data_in_i.%X4 XOR #data_in_i.%X1 XOR #crc_in_i.%X19 XOR #crc_in_i.%X25 XOR #crc_in_i.%X28 XOR #crc_in_i.%X29 XOR #crc_in_i.%X31;
+	#crc_res_i.%X28 := #data_in_i.%X6 XOR #data_in_i.%X5 XOR #data_in_i.%X2 XOR #crc_in_i.%X20 XOR #crc_in_i.%X26 XOR #crc_in_i.%X29 XOR #crc_in_i.%X30;
+	#crc_res_i.%X29 := #data_in_i.%X7 XOR #data_in_i.%X6 XOR #data_in_i.%X3 XOR #crc_in_i.%X21 XOR #crc_in_i.%X27 XOR #crc_in_i.%X30 XOR #crc_in_i.%X31;
+	#crc_res_i.%X30 := #data_in_i.%X7 XOR #data_in_i.%X4 XOR #crc_in_i.%X22 XOR #crc_in_i.%X28 XOR #crc_in_i.%X31;
+	#crc_res_i.%X31 := #data_in_i.%X5 XOR #crc_in_i.%X23 XOR #crc_in_i.%X29;
+	
+	#crc_out := #crc_res_i;
+	
+	
+END_FUNCTION_BLOCK
+
+DATA_BLOCK "crcFunction"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+"crc"
+
+BEGIN
+
+END_DATA_BLOCK
+
+FUNCTION_BLOCK "crc4"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR 
+      crc : DWord;
+      data_in : Array[0..32767] of Byte;
+   END_VAR
+
+   VAR_TEMP 
+      i : DInt;
+   END_VAR
+
+
+BEGIN
+	
+	// data initialization
+	FOR #i := 0 TO 32767 DO
+	  #data_in[#i] := DINT_TO_BYTE(#i);
+	END_FOR;
+	
+	// crc calculation
+	FOR #i := 0 TO 32767 DO
+	  "crcFunction"(data_in := #data_in[#i],
+	                crc_in := #crc,
+	                crc_out => #crc);
+	END_FOR;
+	
+	
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK "crc5"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR 
+      crc : DWord;
+      data_in : Array[0..32767] of Byte;
+   END_VAR
+
+   VAR_TEMP 
+      i : DInt;
+   END_VAR
+
+
+BEGIN
+	
+	// data initialization
+	FOR #i := 0 TO 32767 DO
+	  #data_in[#i] := DINT_TO_BYTE(#i);
+	END_FOR;
+	
+	// crc calculation
+	FOR #i := 0 TO 32767 DO
+	  "crcFunction"(data_in := #data_in[#i],
+	                crc_in := #crc,
+	                crc_out => #crc);
+	END_FOR;
+	
+	
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK "crc6"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR 
+      crc : DWord;
+      data_in : Array[0..32767] of Byte;
+   END_VAR
+
+   VAR_TEMP 
+      i : DInt;
+   END_VAR
+
+
+BEGIN
+	
+	// data initialization
+	FOR #i := 0 TO 32767 DO
+	  #data_in[#i] := DINT_TO_BYTE(#i);
+	END_FOR;
+	
+	// crc calculation
+	FOR #i := 0 TO 32767 DO
+	  "crcFunction"(data_in := #data_in[#i],
+	                crc_in := #crc,
+	                crc_out => #crc);
+	END_FOR;
+	
+	
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK "crc3"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR 
+      crc : DWord;
+      data_in : Array[0..32767] of Byte;
+   END_VAR
+
+   VAR_TEMP 
+      i : DInt;
+   END_VAR
+
+
+BEGIN
+	
+	// data initialization
+	FOR #i := 0 TO 32767 DO
+	  #data_in[#i] := DINT_TO_BYTE(#i);
+	END_FOR;
+	
+	// crc calculation
+	FOR #i := 0 TO 32767 DO
+	  "crcFunction"(data_in := #data_in[#i],
+	                crc_in := #crc,
+	                crc_out => #crc);
+	END_FOR;
+	
+	
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK "crc0"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR 
+      crc : DWord;
+      data_in : Array[0..32767] of Byte;
+   END_VAR
+
+   VAR_TEMP 
+      i : DInt;
+   END_VAR
+
+
+BEGIN
+	
+	// data initialization
+	FOR #i := 0 TO 32767 DO
+	  #data_in[#i] := DINT_TO_BYTE(#i);
+	END_FOR;
+	
+	// crc calculation
+	FOR #i := 0 TO 32767 DO
+	  "crcFunction"(data_in := #data_in[#i],
+	                crc_in := #crc,
+	                crc_out => #crc);
+	END_FOR;
+	
+	
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK "crc1"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR 
+      crc : DWord;
+      data_in : Array[0..32767] of Byte;
+   END_VAR
+
+   VAR_TEMP 
+      i : DInt;
+   END_VAR
+
+
+BEGIN
+	
+	// data initialization
+	FOR #i := 0 TO 32767 DO
+	  #data_in[#i] := DINT_TO_BYTE(#i);
+	END_FOR;
+	
+	// crc calculation
+	FOR #i := 0 TO 32767 DO
+	  "crcFunction"(data_in := #data_in[#i],
+	                crc_in := #crc,
+	                crc_out => #crc);
+	END_FOR;
+	
+	
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK "crc2"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR 
+      crc : DWord;
+      data_in : Array[0..32767] of Byte;
+   END_VAR
+
+   VAR_TEMP 
+      i : DInt;
+   END_VAR
+
+
+BEGIN
+	
+	// data initialization
+	FOR #i := 0 TO 32767 DO
+	  #data_in[#i] := DINT_TO_BYTE(#i);
+	END_FOR;
+	
+	// crc calculation
+	FOR #i := 0 TO 32767 DO
+	  "crcFunction"(data_in := #data_in[#i],
+	                crc_in := #crc,
+	                crc_out => #crc);
+	END_FOR;
+	
+	
+END_FUNCTION_BLOCK
+
+DATA_BLOCK "crc4_0"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+"crc4"
+
+BEGIN
+
+END_DATA_BLOCK
+
+DATA_BLOCK "crc5_0"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+"crc5"
+
+BEGIN
+
+END_DATA_BLOCK
+
+DATA_BLOCK "crc6_0"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+"crc6"
+
+BEGIN
+
+END_DATA_BLOCK
+
+DATA_BLOCK "crc3_0"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+"crc3"
+
+BEGIN
+
+END_DATA_BLOCK
+
+DATA_BLOCK "crc0_0"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+"crc0"
+
+BEGIN
+
+END_DATA_BLOCK
+
+DATA_BLOCK "crc1_0"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+"crc1"
+
+BEGIN
+
+END_DATA_BLOCK
+
+DATA_BLOCK "crc2_0"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+"crc2"
+
+BEGIN
+
+END_DATA_BLOCK
+
+ORGANIZATION_BLOCK "main"
+TITLE = "Main Program Sweep (Cycle)"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+   VAR_TEMP 
+      dummy : Array[0..4] of DWord;
+      i : DInt;
+      c : Bool;
+   END_VAR
+
+
+BEGIN
+	
+	FOR #i := 0 TO 5 DO
+	  
+	  "crc0_0"();
+	  
+	  "crc1_0"();
+	  
+	  "crc2_0"();
+	  
+	  "crc3_0"();
+	  
+	  "crc4_0"();
+	  
+	  "crc5_0"();
+	  
+	  "crc6_0"();
+	
+	END_FOR;
+	
+END_ORGANIZATION_BLOCK
+
