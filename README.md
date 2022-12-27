@@ -107,6 +107,13 @@ operation is implemented by $y = a^x = e^{ln\left(a\right) \cdot x}$.
 
 The program generates the FFT 4096 value long discret real input signal by
 adding a 64 Hz sine singnal, a 128 Hz sine signal and a random noise signal.
+The sample time of the FFT is set to 1 kHz.
 
 $X[n] = 0.7 \cdot \sin\left( 2 \pi \cdot \frac{64 Hz}{1 kHz} \cdot n\right) + \cdot \sin\left( 2 \pi \cdot \frac{128 Hz}{1 kHz} \cdot n\right) + rand(n)$
+
+The noise source is a 14 bit wide LSFR with an output value transformation into
+the interval $[-1,1]$.
+This leads to the following input singal form:
+
+![FFT Input Signal](/doc/fft_input_signal.pdf?raw=true)
 
