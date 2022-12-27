@@ -69,7 +69,7 @@ The generation uses the following arguments:
 # Data Handling (data)
 
 The data handling application is based on functions that are offered by the
-*OSCAT* library, too.
+[*OSCAT*](https://store.codesys.com/oscat-basic.html?___store=en) library, too.
 All data is processed and stored as a 32 bit floating point type.
 The benchmark program is split into the following steps.
 
