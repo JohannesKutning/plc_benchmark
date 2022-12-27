@@ -55,14 +55,14 @@ state transition network uses a switch-case style with integer comparison
 operations.
 The generation uses the following arguments:
 
-    state-count      | 128
-    iterations       | 16384
-    transition-count | 3
-    input_width      | 32
-    output_width     | 32
-    seed             | 42
-    max_net_length   | 5
-    min_net_prob     | 0.1
+state-count      | 128
+iterations       | 16384
+transition-count | 3
+input_width      | 32
+output_width     | 32
+seed             | 42
+max_net_length   | 5
+min_net_prob     | 0.1
 
 # Data Handling (data)
 
