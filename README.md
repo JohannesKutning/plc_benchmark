@@ -129,26 +129,26 @@ The signal generation uses the following definition:
 ```math
 w_s(n) =
 \begin{cases}
-	 7,63 \cdot 10^{5} \cdot n^2                                  \, &\text{if}    0 \le n <  256 \\
-	-7,63 \cdot 10^{5} \cdot \left( n -  512 \right)^2 + 10       \, &\text{if}  256 \le n <  512 \\
-	   10                                                         \, &\text{if}  512 \le n <  768 \\
-	-3,81 \cdot 10^{5} \cdot \left( n -  768 \right)^2 + 10       \, &\text{if}  768 \le n < 1280 \\
-	 3,81 \cdot 10^{5} \cdot \left( n - 1792 \right)^2 - 10       \, &\text{if} 1280 \le n < 1792 \\
-	  -10                                                         \, &\text{if} 1792 \le n < 2048 \\
-	 3,81 \cdot 10^{5} \cdot \left( n - 2048 \right)^2 - 10       \, &\text{if} 2048 \le n < 2560 \\
-	-3,81 \cdot 10^{5} \cdot \left( n - 3072 \right)^2 + 10       \, &\text{if} 2560 \le n < 3072 \\
-		5 \cdot \cos\left( \frac{2\pi}{512}  \cdot x \right) + 5 \, &\text{if} 3072 \le n < 3584 \\
-	   -5 \cdot \cos\left( \frac{2\pi}{1024} \cdot x \right) + 5 \, &\text{if} 3584 \le n < 4096 \\
-		5 \cdot \cos\left( \frac{2\pi}{1024} \cdot x \right) - 5 \, &\text{if} 4096 \le n < 4608 \\
-	   -5 \cdot \cos\left( \frac{2\pi}{512}  \cdot x \right) - 5 \, &\text{if} 4608 \le n < 5120 \\
-	 3,81 \cdot 10^{5} \cdot \left( n - 5120 \right)^2 - 10       \, &\text{if} 5120 \le n < 5632 \\
-	-3,81 \cdot 10^{5} \cdot \left( n - 6144 \right)^2 + 10       \, &\text{if} 5632 \le n < 6144 \\
-	   10                                                         \, &\text{if} 6144 \le n < 6400 \\
-	-3,81 \cdot 10^{5} \cdot \left( n - 6400 \right)^2 + 10       \, &\text{if} 6400 \le n < 6912 \\
-	 3,81 \cdot 10^{5} \cdot \left( n - 7424 \right)^2 - 10       \, &\text{if} 6912 \le n < 7424 \\
-	  -10                                                         \, &\text{if} 7424 \le n < 7680 \\
-	 7,63 \cdot 10^{5} \cdot \left( n - 7680 \right)^2 - 10       \, &\text{if} 7680 \le n < 7936 \\
-	-7,63 \cdot 10^{5} \cdot \left( n - 8192 \right)^2            \, &\text{if} 7936 \le n < 8192 \\
+	 7,63 \cdot 10^{5} \cdot n^2                                  \, &\text{if }    0 \le n <  256 \\
+	-7,63 \cdot 10^{5} \cdot \left( n -  512 \right)^2 + 10       \, &\text{if }  256 \le n <  512 \\
+	   10                                                         \, &\text{if }  512 \le n <  768 \\
+	-3,81 \cdot 10^{5} \cdot \left( n -  768 \right)^2 + 10       \, &\text{if }  768 \le n < 1280 \\
+	 3,81 \cdot 10^{5} \cdot \left( n - 1792 \right)^2 - 10       \, &\text{if } 1280 \le n < 1792 \\
+	  -10                                                         \, &\text{if } 1792 \le n < 2048 \\
+	 3,81 \cdot 10^{5} \cdot \left( n - 2048 \right)^2 - 10       \, &\text{if } 2048 \le n < 2560 \\
+	-3,81 \cdot 10^{5} \cdot \left( n - 3072 \right)^2 + 10       \, &\text{if } 2560 \le n < 3072 \\
+		5 \cdot \cos\left( \frac{2\pi}{512}  \cdot x \right) + 5 \, &\text{if } 3072 \le n < 3584 \\
+	   -5 \cdot \cos\left( \frac{2\pi}{1024} \cdot x \right) + 5 \, &\text{if } 3584 \le n < 4096 \\
+		5 \cdot \cos\left( \frac{2\pi}{1024} \cdot x \right) - 5 \, &\text{if } 4096 \le n < 4608 \\
+	   -5 \cdot \cos\left( \frac{2\pi}{512}  \cdot x \right) - 5 \, &\text{if } 4608 \le n < 5120 \\
+	 3,81 \cdot 10^{5} \cdot \left( n - 5120 \right)^2 - 10       \, &\text{if } 5120 \le n < 5632 \\
+	-3,81 \cdot 10^{5} \cdot \left( n - 6144 \right)^2 + 10       \, &\text{if } 5632 \le n < 6144 \\
+	   10                                                         \, &\text{if } 6144 \le n < 6400 \\
+	-3,81 \cdot 10^{5} \cdot \left( n - 6400 \right)^2 + 10       \, &\text{if } 6400 \le n < 6912 \\
+	 3,81 \cdot 10^{5} \cdot \left( n - 7424 \right)^2 - 10       \, &\text{if } 6912 \le n < 7424 \\
+	  -10                                                         \, &\text{if } 7424 \le n < 7680 \\
+	 7,63 \cdot 10^{5} \cdot \left( n - 7680 \right)^2 - 10       \, &\text{if } 7680 \le n < 7936 \\
+	-7,63 \cdot 10^{5} \cdot \left( n - 8192 \right)^2            \, &\text{if } 7936 \le n < 8192 \\
 \end{cases}
 ```
 
